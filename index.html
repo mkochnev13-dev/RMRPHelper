@@ -28,14 +28,12 @@
 </head>
 <body>
 <div class="container">
-    <!-- Экран входа -->
     <div id="login-screen" class="card">
         <h2>Вход в панель управления</h2>
         <input type="password" id="admin-pass" placeholder="Введите пароль админа">
         <button onclick="checkPass()">Войти</button>
     </div>
 
-    <!-- Основная панель -->
     <div id="main-screen" class="hidden">
         <div class="card">
             <h3>Создать новый ключ</h3>
@@ -66,7 +64,7 @@
 <script>
     const SUPABASE_URL = "https://supabase.co";
     const SUPABASE_KEY = "sb_publishable_zxEzT7COe0uFc-WNIY0Qxg_Fmi5x-tO";
-    const ADMIN_PASSWORD = "RMRP2026"; // Ваш пароль от админки
+    const ADMIN_PASSWORD = "RMRP2026";
 
     const headers = {
         "apikey": SUPABASE_KEY,
@@ -119,7 +117,8 @@
             document.getElementById("note").value = "";
             loadKeys();
         } else {
-            alert("Ошибка создания ключа. Проверьте таблицу в Supabase.");
+            const err = await res.text();
+            alert("Ошибка базы: " + err);
         }
     }
 
@@ -134,7 +133,7 @@
         const res = await fetch(`${SUPABASE_URL}/rest/v1/license_keys?select=*&order=created_at.desc`, { headers });
         const data = await res.json();
 
-        if (!data.length) {
+        if (!Array.isArray(data) || !data.length) {
             list.innerHTML = "<p style='color:#888;'>Ключей пока нет</p>";
             return;
         }
@@ -192,3 +191,5 @@
 </script>
 </body>
 </html>
+
+
